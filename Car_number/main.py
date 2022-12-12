@@ -10,10 +10,13 @@ from os import remove
 
 host_car_number1 = '123가4568'
 host_car_number2 = '52가3108'
-host_car_number3 = '96사2268'
-host_car_number4 = '24조2226'
+host_car_number3 = '152가3018'
+host_car_number4 = '바6641서울85'
+host_car_number5 = '91자2418'
+host_car_number6 = '경남1가0033'
+
 ser = serial.Serial('COM4', 9600)
-video_capture = cv2.VideoCapture(2)
+video_capture = cv2.VideoCapture(0)
 count = 0
 car_in = False
 
@@ -31,10 +34,10 @@ while (True):
                 print('cm')
 
                 # camera capture
-                if int(val_door.decode()[:len(val_door)-1]) <= 10: #초음파 센서와의 거리가 10cm 이하일 때
+                if int(val_door.decode()[:len(val_door)-1]) <= 100: #초음파 센서와의 거리가 10cm 이하일 때
                     file = datetime.datetime.now().strftime("%Y%m%d_%H%M%S%f") + '.jpg' #사진 저장
                     cv2.imwrite(file, frame)
-                    print(file, ' saved')
+                    #print(file, ' saved')
                     break
 
         #2
@@ -343,7 +346,7 @@ while (True):
             info = plate_infos[longest_idx]
             chars = plate_chars[longest_idx]
 
-            print(chars)
+            print(chars + '\n')
 
             #img_out = img_ori.copy()
 
@@ -354,12 +357,12 @@ while (True):
             #plt.figure(figsize=(12, 10))
             #plt.imshow(img_out)
 
-            if host_car_number1 in chars or host_car_number2 in chars or host_car_number3 in chars or host_car_number4 in chars:
+            if host_car_number1 in chars or host_car_number2 in chars or host_car_number3 in chars or host_car_number4 in chars or host_car_number5 in chars or host_car_number6 in chars:
                 count = count + 1
-                print(count, "카운트")
+                #print(count, "카운트")
             else:
                 remove(file) #번호가 다르면 사진 삭제
-                print(file, "removed")
+                #print(file, "removed")
 
             if count >= 2: #두 번 이상 번호가 일치하면
                 commend = 'a' #a를 보내 스텝모터 작동
@@ -373,11 +376,11 @@ while (True):
 
         else: #문자가 검출되지 않으면 사진 삭제
             remove(file)
-            print(file, "removed")
+            #print(file, "removed")
     else: #차가 차고에 들어있을 때
         if ser.readable():
             val_garage = ser.readline()
-            print(val_garage.decode()[:len(val_garage) - 1])  # 넘어온 데이터 중 마지막 개행문자 제외
+            #print(val_garage.decode()[:len(val_garage) - 1])  # 넘어온 데이터 중 마지막 개행문자 제외
 
             #아두이노로부터 받은 숫자가 10000이면 차가 나갔다고 인식
             if int(val_garage.decode()[:len(val_garage) - 1]) == 10000:
